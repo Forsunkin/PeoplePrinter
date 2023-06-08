@@ -1,17 +1,7 @@
 import requests
 import re
 
-first_ip = '192.168.1.38'
-
-url_toner = f'http://{first_ip}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
-url_couner = f'http://{first_ip}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
-
-
-
-
-
 # Получить количество отпечатаных листов
-# Дописать логику передачи ip
 def get_counter(ip):
     url_couner = f'http://{ip}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
     
@@ -22,7 +12,6 @@ def get_counter(ip):
     return result
 
 # Получить отсток тоннера
-# Дописать логику передачи ip
 def get_toner(ip):
     url_toner = f'http://{ip}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
     
