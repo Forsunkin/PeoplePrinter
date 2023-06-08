@@ -11,6 +11,7 @@ url_couner = f'http://{first_ip}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Count
 
 
 # Получить количество отпечатаных листов
+# Дописать логику передачи ip
 def get_counter(ip):
     rst = requests.get(url_couner, ip)
     printer_total = re.findall(r".*printertotal = \('(\d*)'\)", rst.text)           # получить отпечатанные листы
@@ -19,6 +20,7 @@ def get_counter(ip):
     return result
 
 # Получить отсток тоннера
+# Дописать логику передачи ip
 def get_toner(ip):
     rst = requests.get(url_toner, ip)
     toner = re.findall(r".*parseInt\('(\d*)',10\)\)", rst.text)                     # получить остаток тонера
