@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import re
 
 url = "http://192.168.1.99/info_suppliesStatus.html?tab=Home&menu=SupplyStatus" # ОБ
 
