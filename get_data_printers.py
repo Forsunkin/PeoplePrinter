@@ -1,59 +1,62 @@
 import requests
 import re
-import datetime
-
-# Получить количество отпечатаных листов
-def get_counter(ip):
-    url_counter = f'http://{ip}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
-
-    rst = requests.get(url_counter)
-    printer_total = re.findall(r".*printertotal = \('(\d*)'\)", rst.text)           # получить отпечатанные листы
-    copy_total = re.findall(r".*copytotal = \('(\d*)'\)", rst.text)                 # получить сканы
-    result = int(printer_total[0]) + int(copy_total[0])                             # получить тотал
-    return result
-
-# Получить отсток тоннера
-def get_toner(ip):
-    url_toner = f'http://{ip}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
-
-    rst = requests.get(url_toner)
-    toner = re.findall(r".*parseInt\('(\d*)',10\)\)", rst.text)                     # получить остаток тонера
-    result = int(toner[0])
-    return result
+from bs4 import BeautifulSoup
 
 
-# print(get_counter('192.168.1.78'))
-# print(get_toner('192.168.1.78'))
+class PeoplePrinter:
 
-# Нужна функция которая принимает ip возвращает dict для сохранения в базу
-def get_values(ip):
-   # values = {"ip": ip, "datatime":, }
-    get_counter(ip)
-    get_toner(ip)
-
-class People_printer:
-
-    # def ident_printrer(ip):
+    # def ident_printer(ip):
     #     try:
     #         r = requests.get(ip)
-    #
-    def get_counter_kyocera(ip):
-        url_counter = f'http://{ip}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
+    # логика на определение производителя принтера,
 
-        rst = requests.get(url_counter)
-        printer_total = re.findall(r".*printertotal = \('(\d*)'\)", rst.text)       # получить отпечатанные листы
-        copy_total = re.findall(r".*copytotal = \('(\d*)'\)", rst.text)             # получить сканы
-        result = int(printer_total[0]) + int(copy_total[0])                         # получить тотал
-        return result
+    def get_data_hp(self):
+        url = f'''http://{self}/info_suppliesStatus.html?tab=Home&menu=SupplyStatus'''
+
+        source_code = requests.get(url).text
+        bs_code = BeautifulSoup(source_code, "html.parser")
+        data_numbers = bs_code.find_all(class_='itemSpsFont')
+        data_toner = bs_code.find(class_='SupplyName width35 alignRight')
+
+        toner_lvl = re.findall(r"(\d+)", data_toner.text)
+        counter = ''
+
+        return toner_lvl, counter
+        # логика на получение данных
+    def get_data_kyocera(self):
+        url_toner = f'http://{self}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
+        url_counter = f'http://{self}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
+
+    # получение уровня тонера
+        r_toner = requests.get(url_toner)
+        data_toner = re.findall(r".*parseInt\('(\d*)',10\)\)", r_toner.text)  # получить остаток тонера
+        toner_lvl = int(data_toner[0])
+
+    # получение кол-ва листов
+        r_counter = requests.get(url_counter)
+        printer_total = re.findall(r".*printertotal = \('(\d*)'\)", r_counter.text)     # получить отпечатанные листы
+        copy_total = re.findall(r".*copytotal = \('(\d*)'\)", r_counter.text)           # получить сканы
+        counter = int(printer_total[0]) + int(copy_total[0])                            # получить тотал
+
+        return toner_lvl, counter
+
+    def get_counter_kyocera(self):
+        url_counter = f'http://{self}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
+
+        r_counter = requests.get(url_counter)
+        printer_total = re.findall(r".*printertotal = \('(\d*)'\)", r_counter.text)       # получить отпечатанные листы
+        copy_total = re.findall(r".*copytotal = \('(\d*)'\)", r_counter.text)             # получить сканы
+        counter = int(printer_total[0]) + int(copy_total[0])                         # получить тотал
+        return counter
 
 
-    def get_toner_kyocera(ip):
-        url_toner = f'http://{ip}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
+    def get_toner_kyocera(self):
+        url_toner = f'http://{self}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
 
-        rst = requests.get(url_toner)
-        toner = re.findall(r".*parseInt\('(\d*)',10\)\)", rst.text)  # получить остаток тонера
-        result = int(toner[0])
-        return result
+        r_toner = requests.get(url_toner)
+        data_toner = re.findall(r".*parseInt\('(\d*)',10\)\)", r_toner.text)  # получить остаток тонера
+        toner_lvl = int(data_toner[0])
+        return toner_lvl
 
 
-    def get_toner
+

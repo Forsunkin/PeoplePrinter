@@ -12,6 +12,6 @@ def get_data(url):
 
     
     toner_lvl = re.findall(r"(\d+)", data_toner.text)
-    return result
+    return toner_lvl
 
 print(get_data(url))
