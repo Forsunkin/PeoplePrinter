@@ -26,9 +26,10 @@ class PeoplePrinter:
     def get_data_kyocera(self):
         url_toner = f'http://{self}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
         url_counter = f'http://{self}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
-
+        referer_toner = f'http://{self}/startwlm/Hme_Toner.htm'
+        referer_counter = ''
     # получение уровня тонера
-        r_toner = requests.get(url_toner)
+        r_toner = requests.get(url_toner, headers={'referer': referer_toner})
         data_toner = re.findall(r".*parseInt\('(\d*)',10\)\)", r_toner.text)  # получить остаток тонера
         toner_lvl = int(data_toner[0])
 
@@ -40,23 +41,25 @@ class PeoplePrinter:
 
         return toner_lvl, counter
 
-    def get_counter_kyocera(self):
-        url_counter = f'http://{self}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
+    # def get_counter_kyocera(self):
+    #     url_counter = f'http://{self}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
+    #
+    #     r_counter = requests.get(url_counter)
+    #     printer_total = re.findall(r".*printertotal = \('(\d*)'\)", r_counter.text)       # получить отпечатанные листы
+    #     copy_total = re.findall(r".*copytotal = \('(\d*)'\)", r_counter.text)             # получить сканы
+    #     counter = int(printer_total[0]) + int(copy_total[0])                         # получить тотал
+    #     return counter
+    #
+    #
+    # def get_toner_kyocera(self):
+    #     url_toner = f'http://{self}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
+    #
+    #     r_toner = requests.get(url_toner)
+    #     data_toner = re.findall(r".*parseInt\('(\d*)',10\)\)", r_toner.text)  # получить остаток тонера
+    #     toner_lvl = int(data_toner[0])
+    #     return toner_lvl
 
-        r_counter = requests.get(url_counter)
-        printer_total = re.findall(r".*printertotal = \('(\d*)'\)", r_counter.text)       # получить отпечатанные листы
-        copy_total = re.findall(r".*copytotal = \('(\d*)'\)", r_counter.text)             # получить сканы
-        counter = int(printer_total[0]) + int(copy_total[0])                         # получить тотал
-        return counter
 
-
-    def get_toner_kyocera(self):
-        url_toner = f'http://{self}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
-
-        r_toner = requests.get(url_toner)
-        data_toner = re.findall(r".*parseInt\('(\d*)',10\)\)", r_toner.text)  # получить остаток тонера
-        toner_lvl = int(data_toner[0])
-        return toner_lvl
-
-
-
+ip = '192.168.1.38'
+pp = PeoplePrinter
+print(pp.get_data_kyocera(ip))
