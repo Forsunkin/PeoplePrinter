@@ -48,6 +48,7 @@ class PeoplePrinter:
         return toner_lvl, counter
 
     def get_data_printer(self):
+        # логика на определение производителя принтера,
         url = f'http://{self}'
         try:
             response = requests.get(url)
@@ -65,7 +66,7 @@ class PeoplePrinter:
             print(err)
             return err
 
-    # логика на определение производителя принтера,
+
 
 
 ip = '192.168.1.36'
