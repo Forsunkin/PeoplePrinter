@@ -21,8 +21,11 @@ def get_data_hp(obj):
 
     toner_lvl = re.findall(r"(\d+)", data_toner.text)
     counter = ''
-    data_config = bs_code_config.find_all(class_='mainContentArea').find_all(class_='pad10')
-    print(data_config)
+
+    data_config = bs_code_config.find("td", string='Всего оттисков:')
+    r_parent = data_config.find_parent('tr')
+    data = r_parent.find(class_='itemFont')
+    print(data.text)
     #father.findNext('div', {'class': 'class_value'}).findNext('div', {'id': 'id_value'}).findAll('a')
     #div[class=class_value]/div[id=id_value]
     # xpath
