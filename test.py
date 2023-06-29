@@ -1,46 +1,38 @@
-from bs4 import BeautifulSoup
 import requests
-import re
+from get_data_kyocera import get_prints_toner_kyocera
+from get_data_hp import get_prints_toner_hp
+from kostili import kostil_base_get_list_ip as list_ip
 
-
-def get_data_hp(obj):
-    url_toner = f'''http://{obj}/info_suppliesStatus.html?tab=Home&menu=SupplyStatus'''
-    url_config = f'''http://{obj}/info_configuration.html?tab=Home&menu=DevConfig'''
-
-    source_code_config = requests.get(url_config).text
-    source_code_toner = requests.get(url_toner).text
-
-    bs_code_toner = BeautifulSoup(source_code_toner, "html.parser")
-    bs_code_config = BeautifulSoup(source_code_config, "html.parser")
-
-    # data_numbers = bs_code.find_all(class_='itemSpsFont') прочие данные с инфо о кол-ве оттисков с картриджем
-
-    # data_config = bs_code_config.find_all('tr')
-
-    data_toner = bs_code_toner.find(class_='SupplyName width35 alignRight')
-
-    toner_lvl = re.findall(r"(\d+)", data_toner.text)
-    counter = ''
-
-    data_config = bs_code_config.find("td", string='Всего оттисков:')
-    r_parent = data_config.find_parent('tr')
-    data = r_parent.find(class_='itemFont')
-    print(data.text)
-    #father.findNext('div', {'class': 'class_value'}).findNext('div', {'id': 'id_value'}).findAll('a')
-    #div[class=class_value]/div[id=id_value]
-    # xpath
-    # /html/body/div[@class='applicationPalette']
-    # /table/tbody/tr[2]
-    # /td[@class='rightContentPane']
-    # /div[@class='pad10'][3]
-    # /table[@class='mainContentArea']
-    # /tbody
-    # /tr[1]
-    # /td[@class='itemFont']
-    return 1
+# Временный костыль ip_list - список Ip адрессов
 
 
 
 
-print(get_data_hp('192.168.1.95'))
+def get_data_printer(ip_address):
+    # логика на определение производителя принтера,
+    url = f'http://{ip_address}'
+    response = requests.get(url)
+    if 'KYOCERA' in response.text:
+        data = get_prints_toner_kyocera(ip_address)
+        print(f'{ip_address}: Toner - {data[0]}, Prints - {data[1]}')
 
+    elif 'HP LaserJet' in response.text:
+        data = get_prints_toner_hp(ip_address)
+        print(f'{ip_address}: Toner - {data[0]}, Prints - {data[1]}')
+    else:
+        print(ip_address, 'Неверный ip')
+
+def getting_info():
+    for ip_address in list_ip():
+        try:
+            info = get_data_printer(ip_address)
+        except (ValueError, IndexError, requests.exceptions.ConnectTimeout):
+            print(f'{ip_address}- fail get')
+
+
+
+
+
+
+
+getting_info()
