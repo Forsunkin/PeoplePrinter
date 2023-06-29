@@ -69,6 +69,6 @@ class PeoplePrinter:
 
 
 
-ip = '192.168.1.36'
+ip = '192.168.1.95'
 pp = PeoplePrinter
 print(pp.get_data_printer(ip))
