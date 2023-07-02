@@ -33,9 +33,10 @@ def get_prints_toner_kyocera(ip_address):
 
     # Получение конфигурации
     try:
-        mac_address = re.findall(r".*macAddress = '(.*)'", page_code_info.text)     # получить mac адресс
-        model = re.findall(r".*model = '.* (.*)'", page_code_info.text)             # получть Модель
-        host_name = re.findall(r".*hostName = '(.*)'", page_code_info.text)         # получить HostName
+        mac_address = re.findall(r".*macAddress = '(.*)'", page_code_info.text)[0]     # получить mac адресс
+        model = re.findall(r".*model = '(.*)'", page_code_info.text)[0]                # получть Модель
+        # model = re.findall(r".*model = '.* (.*)'", page_code_info.text)[0]           # получть Модель без ECOSYS
+        host_name = re.findall(r".*hostName = '(.*)'", page_code_info.text)[0]         # получить HostName
 
         f = re.findall(r"192.168.(\d*).\d*", ip_address)[0]                         # определение отеля
         if f == '1':
@@ -73,7 +74,34 @@ def get_prints_toner_hp(ip_address):
     data_toner = bs_code_toner.find(class_='SupplyName width35 alignRight')
     toner_lvl = (re.findall(r"(\d+)", data_toner.text)[0])                                        # уровнеь тонера
 
-    return int(toner_lvl), int(prints_count)
+    td = bs_code_config.find("td", string='Аппаратный адрес:')
+    td_parent = td.find_parent('tr')
+    mac_address_unsorted = td_parent.find(class_='itemFont').text
+    mac_address = (re.findall(r"(\w\w.*\w\w)", mac_address_unsorted)[0]).upper()
+
+    td = bs_code_config.find("td", string='Имя хоста:')
+    td_parent = td.find_parent('tr')
+    host_name_unsorted = td_parent.find(class_='itemFont').text
+    host_name = (re.findall(r"(\w\w.*\w\w)", host_name_unsorted)[0]).upper()
+
+
+    td = bs_code_config.find("td", string='Название продукта:')
+    td_parent = td.find_parent('tr')
+    model = td_parent.find(class_='itemFont').text
+
+    f = re.findall(r"192.168.(\d*).\d*", ip_address)[0]  # определение отеля
+    if f == '1':
+        locate = 'olimp'
+    elif f == '2':
+        locate = 'summarinn'
+    elif f == '4':
+        locate = 'aurum'
+    else:
+        locate = 'Неизвестно'
+
+
+    return {'ip_address': ip_address, 'mac_address': mac_address, 'host_name': host_name, 'prod': 'KYOCERA',
+            'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count}
 
 
 # логика на определение производителя принтера
@@ -83,24 +111,23 @@ def get_data_printer(ip_address):
         response = requests.get(url)
         if 'KYOCERA' in response.text:
             data = get_prints_toner_kyocera(ip_address)
-            print(data)
+            return data
 
         elif 'HP LaserJet' in response.text:
             data = get_prints_toner_hp(ip_address)
-            print(f'{ip_address}: Toner - {data[0]}, Prints - {data[1]}')
+            return data
         else:
-            print(ip_address, 'Неверный ip')
+            print(ip_address, ' - Неверный ip')
     except requests.exceptions.ConnectionError:
-            print(f'{ip_address}- ConnectTimeout')
+            print(ip_address, ' - ConnectTimeout')
+
 
 def getting_info():
     for ip_address in list_ip():
             info = get_data_printer(ip_address)
+            print(info)
 
 
+if __name__ == "__main__":
+    getting_info()
 
-
-
-
-
-getting_info()
