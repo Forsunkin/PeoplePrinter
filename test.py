@@ -31,24 +31,26 @@ def get_prints_toner_kyocera(ip_address):
     except (ValueError, IndexError):
         toner_lvl = 'Error'
 
-
+    # Получение конфигурации
     try:
-        mac_address = re.findall(r".*macAddress = '(.*)'", page_code_info.text)  # получить mac адресс
-        model = re.findall(r".*model = '.* (.*)'", page_code_info.text)  # получть Модель
-        host_name = re.findall(r".*hostName = '(.*)'", page_code_info.text)  # получить HostName
+        mac_address = re.findall(r".*macAddress = '(.*)'", page_code_info.text)     # получить mac адресс
+        model = re.findall(r".*model = '.* (.*)'", page_code_info.text)             # получть Модель
+        host_name = re.findall(r".*hostName = '(.*)'", page_code_info.text)         # получить HostName
 
-        f = re.findall(r"192.168.(\d*).\d*", ip_address)[0]
-        locale = 'Неизвестно'  # Получить расположение
+        f = re.findall(r"192.168.(\d*).\d*", ip_address)[0]                         # определение отеля
         if f == '1':
             locate = 'olimp'
         elif f == '2':
             locate = 'summarinn'
         elif f == '4':
             locate = 'aurum'
+        else:
+            locate = 'Неизвестно'
 
 
     finally:
-        return ip_address, mac_address, host_name, 'KYOCERA', model, locale, toner_lvl, prints_count,
+        return {'ip_address': ip_address, 'mac_address': mac_address, 'host_name': host_name, 'prod':'KYOCERA',
+                'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count}
 
 
 def get_prints_toner_hp(ip_address):
@@ -74,28 +76,26 @@ def get_prints_toner_hp(ip_address):
     return int(toner_lvl), int(prints_count)
 
 
-
+# логика на определение производителя принтера
 def get_data_printer(ip_address):
-    # логика на определение производителя принтера,
-    url = f'http://{ip_address}'
-    response = requests.get(url)
-    if 'KYOCERA' in response.text:
-        data = get_prints_toner_kyocera(ip_address)
-        print(f'{ip_address}: Toner - {data[0]}, Prints - {data[1]}')
+    try:
+        url = f'http://{ip_address}'
+        response = requests.get(url)
+        if 'KYOCERA' in response.text:
+            data = get_prints_toner_kyocera(ip_address)
+            print(data)
 
-    elif 'HP LaserJet' in response.text:
-        data = get_prints_toner_hp(ip_address)
-        print(f'{ip_address}: Toner - {data[0]}, Prints - {data[1]}')
-    else:
-        print(ip_address, 'Неверный ip')
-
+        elif 'HP LaserJet' in response.text:
+            data = get_prints_toner_hp(ip_address)
+            print(f'{ip_address}: Toner - {data[0]}, Prints - {data[1]}')
+        else:
+            print(ip_address, 'Неверный ip')
+    except requests.exceptions.ConnectionError:
+            print(f'{ip_address}- ConnectTimeout')
 
 def getting_info():
     for ip_address in list_ip():
-        try:
             info = get_data_printer(ip_address)
-        except (requests.exceptions.ConnectTimeout):
-            print(f'{ip_address}- ConnectTimeout')
 
 
 
