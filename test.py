@@ -8,7 +8,7 @@ def get_prints_toner_kyocera(ip_address):
     url_counter = f'http://{ip_address}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
     url_toner = f'http://{ip_address}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
     url_info = f'http://{ip_address}/js/jssrc/model/dvcinfo/dvcconfig/DvcConfig_Config.model.htm'
-
+    ''
     headers = {'Cookie': 'rtl=0; css=0',
                      'Referer': f"http://{ip_address}/startwlm/Start_Wlm.htm"}
 
