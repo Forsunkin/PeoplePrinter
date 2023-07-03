@@ -1,7 +1,7 @@
 
 def kostil_base_get_list_ip():
     ip_list = []
-    with open('later/ip_printers_test.txt') as f:
+    with open('ip_printers.txt') as f:
             file_list = f.read().splitlines()
             for ip in file_list:
                 ip_list.append(ip)
@@ -10,4 +10,4 @@ def kostil_base_get_list_ip():
 
 
 if __name__ == "__main__":
-    pass
+    print(kostil_base_get_list_ip())
