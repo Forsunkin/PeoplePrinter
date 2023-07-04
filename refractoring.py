@@ -18,39 +18,33 @@ def find_locate(ip_address):
         locate = 'Неизвестно'
     return locate
 
+
 # синхронизация ip с базой конфигураций принеров, определение объекта locate
-def check_ip_in_base(ip_address):
+def sync_ip_in_base(ip_address):
     cursor = sqlite_connection.cursor()
     locate = find_locate(ip_address)
     # проверка наличия ip в базе
-    checking = cursor.execute(f"SELECT * FROM config_printers WHERE ip_address='{ip_address}'")
+    checking = cursor.execute(f"SELECT * FROM config_printers WHERE ip_address ='{ip_address}'")
 
     if checking.fetchone() is None:
+        #Ебануть класс для обработки принтера
         cursor.execute(f"INSERT INTO config_printers (ip_address, locate) VALUES ('{ip_address}', '{locate}')")
+        sqlite_connection.commit()
+        print(f"Добавлен новый ip: {ip_address} | {locate}")
+
     else:
         cursor.execute(f"UPDATE config_printers SET locate = '{locate}' WHERE ip_address = '{ip_address}'")
-        print()
-        return True
+        sqlite_connection.commit()
 
-    sqlite_connection.commit()
-    print(ip_address)
     sqlite_connection.close()
-
-
 
 
 def getting_info():
     print('Проверка...')
     for ip_address in list_ip():
-            #логика для проверки есть ли принтер в базе
-            check_ip_in_base(ip_address)
-
-
-
-
+        # логика для проверки есть ли принтер в базе
+        sync_ip_in_base(ip_address)
 
 
 if __name__ == "__main__":
-    check_ip_in_base('192.168.1.33')
-
-
+    sync_ip_in_base('192.168.1.35')
