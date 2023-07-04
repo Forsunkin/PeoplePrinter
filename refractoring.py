@@ -27,7 +27,7 @@ def sync_ip_in_base(ip_address):
     checking = cursor.execute(f"SELECT * FROM config_printers WHERE ip_address ='{ip_address}'")
 
     if checking.fetchone() is None:
-        #Ебануть класс для обработки принтера
+        # Ебануть класс для обработки принтера
         cursor.execute(f"INSERT INTO config_printers (ip_address, locate) VALUES ('{ip_address}', '{locate}')")
         sqlite_connection.commit()
         print(f"Добавлен новый ip: {ip_address} | {locate}")
@@ -42,8 +42,7 @@ def sync_ip_in_base(ip_address):
 def getting_info():
     print('Проверка...')
     for ip_address in list_ip():
-        # логика для проверки есть ли принтер в базе
-        sync_ip_in_base(ip_address)
+        sync_ip_in_base(ip_address)     # логика для проверки наличия принтера в базе
 
 
 if __name__ == "__main__":
