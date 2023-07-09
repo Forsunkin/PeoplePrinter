@@ -12,6 +12,41 @@ class PeoplePrinter:
         self.prod = self.get_prod_printer
         self.locate = self.find_locate(ip_address)
         self.config = self.collect
+        self.kyocera = Kyocera(ip_address, self.prod)
+        self.eny = 'any'
+
+    def __str__(self):
+        return str(self.rrr)
+
+
+    @staticmethod
+    def find_locate(ip_address):
+        f = re.findall(r"192.168.(\d*).\d*", ip_address)[0]  # определение отеля
+        if f == '1':
+            locate = 'olimp'
+        elif f == '2':
+            locate = 'summarinn'
+        elif f == '4':
+            locate = 'aurum'
+        else:
+            locate = 'Неизвестно'
+        return locate
+
+    @property
+    def get_prod_printer(self):
+        try:
+            url = f'http://{self.ip_address}'
+            response = requests.get(url)
+            if 'KYOCERA' in response.text:
+                self.prod = 'KYOCERA'
+                self.get_info = PeopleKyocera
+            elif 'HP LaserJet' in response.text:
+                self.prod = 'HP'
+                self.get_info = PeopleHp
+            else:
+                return self, ' - Неверный ip'
+        except requests.exceptions.ConnectionError:
+            return self, ' - ConnectTimeout'
 
 
     def get_prints_toner_kyocera(ip_address):
@@ -64,38 +99,6 @@ class PeoplePrinter:
             return {'ip_address': ip_address, 'mac_address': mac_address, 'host_name': host_name, 'prod': 'KYOCERA',
                     'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count}
 
-    def __str__(self):
-        return str(self.collect)
-
-    @staticmethod
-    def find_locate(ip_address):
-        f = re.findall(r"192.168.(\d*).\d*", ip_address)[0]  # определение отеля
-        if f == '1':
-            locate = 'olimp'
-        elif f == '2':
-            locate = 'summarinn'
-        elif f == '4':
-            locate = 'aurum'
-        else:
-            locate = 'Неизвестно'
-        return locate
-
-    @property
-    def get_prod_printer(self):
-        try:
-            url = f'http://{self.ip_address}'
-            response = requests.get(url)
-            if 'KYOCERA' in response.text:
-                self.prod = 'KYOCERA'
-
-            elif 'HP LaserJet' in response.text:
-                self.prod = 'HP'
-                return self.prod
-            else:
-                return self, ' - Неверный ip'
-        except requests.exceptions.ConnectionError:
-            return self, ' - ConnectTimeout'
-
     @property
     def collect(self):
         info_dict = {'ip_address': self.ip_address, 'mac_address': self.mac_address, 'host_name': 123,
@@ -104,14 +107,24 @@ class PeoplePrinter:
         return info_dict
 
 
-class Kyocera(PeoplePrinter):
-    def __init__(self, ip_address):
-        super().__init__(ip_address)
-        self.prod = '12333'
+class PeopleKyocera:
+    def __int__(self):
+        self.model = self.find_model
+
+    def find_model(self):
+        print()
+
+
+class PeopleHp:
+    pass
+
+
+
+
 
 
 
 
 ip = '192.168.1.36'
 printer = PeoplePrinter(ip)
-print(printer.config)
+print(printer)

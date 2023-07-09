@@ -13,7 +13,7 @@ def getting_info():
 
 def create_table():
     cursor = sqlite_connection.cursor()
-    sqlite_create_table = f'''CREATE TABLE if not exists config_printers (
+    sqlite_create_table = f'''CREATE TABLE if not exists run (
                         ip_address TEXT,
                         mac_address TEXT,
                         host_name TEXT,
@@ -26,8 +26,8 @@ def create_table():
                         zamena_toner TEXT,
                         otpechatano_cartrige INT,
                         ottisk_ostalos INT,
-                        PRIMARY KEY(mac_address)
-                        UNIQUE (ip_address, mac_address)
+                        status TEXT,
+                        datetime TEXT
     );'''
 
     cursor.execute(sqlite_create_table)

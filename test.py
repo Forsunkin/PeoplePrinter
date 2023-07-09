@@ -1,8 +1,11 @@
 import requests
 import re
 from bs4 import BeautifulSoup
-from kostili import kostil_base_get_list_ip as list_ip      # Временный костыль ip_list - список Ip адрессов
+from kostili import kostil_base_get_list_ip as list_ip      # Временный костыль ip_list - список Ip адрессов,
+import sqlite3
+import datetime
 
+sqlite_connection = sqlite3.connect('people_printers.db')
 
 def get_prints_toner_kyocera(ip_address):
     url_counter = f'http://{ip_address}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
@@ -51,7 +54,7 @@ def get_prints_toner_kyocera(ip_address):
 
     finally:
         return {'ip_address': ip_address, 'mac_address': mac_address, 'host_name': host_name, 'prod':'KYOCERA',
-                'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count}
+                'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count, 'status': 'Done'}
 
 
 def get_prints_toner_hp(ip_address):
@@ -101,7 +104,8 @@ def get_prints_toner_hp(ip_address):
 
 
     return {'ip_address': ip_address, 'mac_address': mac_address, 'host_name': host_name, 'prod': 'KYOCERA',
-            'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count}
+            'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count, 'status': 'Done'}
+
 
 
 # логика на определение производителя принтера
@@ -117,17 +121,35 @@ def get_data_printer(ip_address):
             data = get_prints_toner_hp(ip_address)
             return data
         else:
-            print(ip_address, ' - Неверный ip')
+            return {'ip_address': ip_address, 'mac_address': None, 'host_name': None, 'prod': None,
+                    'model': None, 'locate': None, 'toner_lvl': None, 'prints_count': None, 'status': 'ip некоректен'}
     except requests.exceptions.ConnectionError:
-            print(ip_address, ' - ConnectTimeout')
+        return {'ip_address': ip_address, 'mac_address': None, 'host_name': None, 'prod': None,
+                    'model': None, 'locate': None, 'toner_lvl': None, 'prints_count': None, 'status': 'ConnectTimeout'}
+
+
+def post_info(inf):
+    cursor = sqlite_connection.cursor()
+    sqlite_post_info = f"""INSERT INTO run VALUES ('{inf['ip_address']}', '{inf['mac_address']}', 
+                                                                '{inf['host_name']}', '{inf['prod']}', '{inf['model']}', 
+                                                                '{inf['locate']}', '{inf['toner_lvl']}', 
+                                                                '{inf['prints_count']}', NULL, NULL, NULL, NULL, '{inf['status']}', DATETIME('now'))"""
+
+    print(sqlite_post_info)
+    cursor.execute(sqlite_post_info)
+    sqlite_connection.commit()
+    print('успех')
+
 
 
 def getting_info():
     for ip_address in list_ip():
             info = get_data_printer(ip_address)
-            print(info)
+            post_info(info)
+
+
 
 
 if __name__ == "__main__":
-    getting_info()
+    print(getting_info())
 
