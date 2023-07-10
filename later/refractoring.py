@@ -2,7 +2,7 @@ import sqlite3
 import re
 from kostili import kostil_base_get_list_ip as list_ip  # Временный костыль ip_list - список Ip адрессов
 
-sqlite_connection = sqlite3.connect('people_printers.db')
+sqlite_connection = sqlite3.connect('../people_printers.db')
 print("Подключен к people_printers.db SQLite")
 
 

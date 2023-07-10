@@ -1,6 +1,11 @@
 import requests
 import re
 
+'''Метод get_simple_info() возвращает базовую инфу о модели в виде словаря 
+    {'ip_address': '192.168.1.36', 
+    'prod': 'KYOCERA', 
+    'locate': 'Olimp'}'''
+
 
 class PeoplePrinterSimpleInfo:
 
@@ -15,11 +20,11 @@ class PeoplePrinterSimpleInfo:
     def find_locate(self):
         f = re.findall(r"192.168.(\d*).\d*", self.ip_address)[0]  # определение отеля
         if f == '1':
-            locate = 'olimp'
+            locate = 'Olimp'
         elif f == '2':
-            locate = 'summarinn'
+            locate = 'Summarinn'
         elif f == '4':
-            locate = 'aurum'
+            locate = 'Aurum'
         else:
             locate = 'Неизвестно'
         return locate
@@ -41,12 +46,14 @@ class PeoplePrinterSimpleInfo:
             return self.prod
 
     def get_simple_info(self):
-        return self.ip_address, self.prod, self.locate
+        d = {'ip_address': self.ip_address, 'prod': self.prod, 'locate':self.locate}
+
+        return d
 
 
 if __name__ == "__main__":
     ip = '192.168.1.36'
     printer = PeoplePrinterSimpleInfo(ip)
-    print(printer)
+    print(printer.get_simple_info())
 
 
