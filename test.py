@@ -3,9 +3,9 @@ import re
 from bs4 import BeautifulSoup
 from kostili import kostil_base_get_list_ip as list_ip      # Временный костыль ip_list - список Ip адрессов,
 import sqlite3
-import datetime
 
 sqlite_connection = sqlite3.connect('people_printers.db')
+
 
 def get_prints_toner_kyocera(ip_address):
     url_counter = f'http://{ip_address}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
@@ -133,7 +133,7 @@ def post_info(inf):
     sqlite_post_info = f"""INSERT INTO run VALUES ('{inf['ip_address']}', '{inf['mac_address']}', 
                                                                 '{inf['host_name']}', '{inf['prod']}', '{inf['model']}', 
                                                                 '{inf['locate']}', '{inf['toner_lvl']}', 
-                                                                '{inf['prints_count']}', NULL, NULL, NULL, NULL, '{inf['status']}', DATETIME('now'))"""
+                                                                '{inf['prints_count']}', NULL, NULL, NULL, NULL, '{inf['status']}', DATETIME('now','localtime'))"""
 
     print(sqlite_post_info)
     cursor.execute(sqlite_post_info)
