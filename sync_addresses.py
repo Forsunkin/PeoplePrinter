@@ -1,7 +1,7 @@
 import sqlite3
 import re
 from kostili import kostil_base_get_list_ip as list_ip  # Временный костыль ip_list - список Ip адрессов
-from PeoplePrinterSimpleInfo import PeoplePrinterSimple
+from PeoplePrinterSimpleInfo import PeoplePrinterInit
 
 sqlite_connection = sqlite3.connect('people_printers_test.db')
 print("Подключен к people_printers.db SQLite")
@@ -29,7 +29,7 @@ cursor.execute(sqlite_create_table)
 
 # синхронизация ip с базой конфигураций принеров, определение объекта locate
 def sync_ip_in_base(ip_address):
-    locate = PeoplePrinterSimple.find_locate(ip_address)
+    locate = PeoplePrinterInit.find_locate(ip_address)
     cursor = sqlite_connection.cursor()
     # проверка наличия ip в базе
     checking = cursor.execute(f"SELECT * FROM config_printers WHERE ip_address ='{ip_address}'")
