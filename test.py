@@ -103,7 +103,7 @@ def get_prints_toner_hp(ip_address):
         locate = 'Неизвестно'
 
 
-    return {'ip_address': ip_address, 'mac_address': mac_address, 'host_name': host_name, 'prod': 'KYOCERA',
+    return {'ip_address': ip_address, 'mac_address': mac_address, 'host_name': host_name, 'prod': 'HP',
             'model': model, 'locate': locate, 'toner_lvl': toner_lvl, 'prints_count': prints_count, 'status': 'Done'}
 
 

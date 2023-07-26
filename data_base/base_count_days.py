@@ -1,6 +1,8 @@
 import sqlite3
 import datetime
 
+# Получить количество оттисков за 14дней
+
 sqlite_connection = sqlite3.connect('sqlite_python.db')
 print("Подключен к SQLite")
 

@@ -1,5 +1,4 @@
 import sqlite3
-import click
 # допилить интерфейс для общения с базой через модуль click
 
 sqlite_connection = sqlite3.connect('printers_base.db')

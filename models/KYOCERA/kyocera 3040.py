@@ -13,7 +13,7 @@ def get_3040(ip_address):
 
 
     page_code_info = requests.get(url, headers=headers)
-
+    print(page_code_info.text)
     mac = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[175\]\+" :",(".{17}")', page_code_info.text)[0]
     model = re.findall(r".*model = '(.*)'", page_code_info.text)[0]                # получть Модель
     host_name = re.findall(r".*hostName = '(.*)'", page_code_info.text)[0]         # получить HostName
@@ -33,7 +33,7 @@ def get_data_printer(ip_address):
                 requests.get('http://192.168.1.33/esu/DeepSleepApply.htm', headers=headers)
                 print(response.text)
             else:
-                print('123')
+                get_3040(ip_address)
         elif 'HP LaserJet' in response.text:
             pass
         else:
