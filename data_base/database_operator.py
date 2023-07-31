@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class Database(object):
     DB_LOCATION = '../people_printers.db'
 
@@ -37,20 +38,29 @@ class Database(object):
                         datetime TEXT);''')
         print("Table printers is created")
 
-    def __enter__(self):
-        return self
+    # Возвращает ip адреса из таблицы с принтерами
 
-    def __exit__(self, ext_type, exc_value, traceback):
-        self.cur.close()
-        if isinstance(exc_value, Exception):
-            self.connection.rollback()
-        else:
-            self.connection.commit()
-        self.connection.close()
+    def get_ip_db(self):
+        ip_addresess = self.cur.execute('SELECT ip_address FROM printers')
+        ip_addresess = self.cur.fetchall()
+        return ip_addresess
+
+    # Вовращает ip адреса из файла с ip
+    # (временный костыль)
+    @staticmethod
+    def get_ip_txt():
+        ip_list = []
+        with open('ip_printers.txt') as f:
+            file_list = f.read().splitlines()
+            for ip in file_list:
+                ip_list.append(ip)
+        return ip_list
 
     def commit(self):
         self.connection.commit()
 
+
 if __name__ == "__main__":
-    with Database() as db:
-        print(db.execute(f"SELECT * FROM printers WHERE ip_address ='192.168.1.31'"))
+    db = Database()
+    print(db.get_ip_db())
+    print(db.get_ip_txt())

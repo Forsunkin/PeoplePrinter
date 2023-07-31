@@ -1,78 +1,24 @@
-import sqlite3
 from database_operator import Database
 
-# sqlite_connection = sqlite3.connect('people_printers_test.db')
-# print("Подключен к people_printers.db SQLite")
-# cursor = sqlite_connection.cursor()
-#
-# sqlite_create_table = f'''CREATE TABLE if not exists config_printers (
-#                        ip_address TEXT,
-#                        mac_address TEXT,
-#                        host_name TEXT,
-#                        prod TEXT,
-#                        model TEXT,
-#                        locate TEXT,
-#                        toner_lvl INT,
-#                        prints_count INT,
-#                        cartridge TEXT,
-#                        zamena_toner TEXT,
-#                        otpechatano_cartrige INT,
-#                        ottisk_ostalos INT,
-#                        status TEXT,
-#                        datetime TEXT
-#    );'''
-#
-# cursor.execute(sqlite_create_table)
-#
-#
-# # синхронизация ip с базой конфигураций принеров, определение объекта locate
-# def sync_ip_in_base(ip_address):
-#     locate = PeoplePrinterInit.find_locate(ip_address)
-#     cursor = sqlite_connection.cursor()
-#     # проверка наличия ip в базе
-#     checking = cursor.execute(f"SELECT * FROM config_printers WHERE ip_address ='{ip_address}'")
-#
-#     if checking.fetchone() is None:
-#         # Ебануть класс для обработки принтера
-#         cursor.execute(f"INSERT INTO config_printers (ip_address, locate) VALUES ('{ip_address}', '{locate}')")
-#         sqlite_connection.commit()
-#         print(f"Добавлен новый ip: {ip_address} | {locate}")
-#
-#     else:
-#         cursor.execute(f"UPDATE config_printers SET locate = '{locate}' WHERE ip_address = '{ip_address}'")
-#         sqlite_connection.commit()
-#
-#
-#
-# def getting_info():
-#     print('Проверка...')
-#     for ip_address in list_ip():
-#         sync_ip_in_base(ip_address)     # логика для проверки наличия принтера в базе
-#
-#
-# if __name__ == "__main__":
-#     getting_info()
 
 class Printers():
-    def __int__(self):
-        self.ip_list = self.ip_kostil
+    db = Database()
 
+    def __init__(self):
+        self.ip_txt = self.db.get_ip_txt
+        self.ip_db = self.db.get_ip_db
 
-    @staticmethod
-    def sync_address():
-        with Database as db:
-            print(db.ip_list)
-
-    @property
-    def ip_kostil(self):
-        ip_list = []
-        with open('ip_printers.txt') as f:
-                file_list = f.read().splitlines()
-                for ip in file_list:
-                    ip_list.append(ip)
-        return ip_list
+    def sync_addresses(self):
+        for ip_address in self.ip_txt():
+            if ip_address in self.ip_db():
+                pass
+            else:
+                #Класс.получить инфу и добавить
+                #Класс для обработки и получения всей инфы по отсутсвующему принтеру
+                pass
 
 
 
 if __name__ == "__main__":
-    print(Printers.sync_address())
+    p = Printers()
+    p.sync_addresses()
