@@ -1,7 +1,7 @@
 import requests
 import re
 
-'''Метод get_simple_info() возвращает базовую инфу о модели в виде словаря используется для частого сбора данных
+'''Метод get_init_info() возвращает базовую инфу о модели в виде словаря используется для частого сбора данных
     о работе принтеров
     {'ip_address': '192.168.1.36', 
     'prod': 'KYOCERA', 
@@ -13,7 +13,7 @@ import re
     '''
 
 
-#   класс содержит базовые функции для проверки ip и принтера
+#   класс PeoplePrinterInit содержит базовые функции для проверки ip и принтера
 class PeoplePrinterInit:
 
     def __init__(self, ip_address):
@@ -22,7 +22,7 @@ class PeoplePrinterInit:
         self.locate = self.find_locate(ip_address)
 
     def __str__(self):
-        return str(self.get_simple_info())
+        pass
 
     @staticmethod
     def find_locate(ip_address):
@@ -47,9 +47,11 @@ class PeoplePrinterInit:
             elif 'HP LaserJet' in response.text:
                 self.prod = 'HP'
             else:
-                return self, ' - Неверный ip'
+                self.prod = 'Неверный ip'
+                return self.prod
         except requests.exceptions.ConnectionError:
-            return self, ' - ConnectTimeout'
+            self.prod = 'ConnectTimeout'
+            return self.prod
         finally:
             return self.prod
 
@@ -64,7 +66,8 @@ class PeoplePrinter(PeoplePrinterInit):
         if self.prod == 'KYOCERA':
             self.data = KyoceraMajor
 
-
+        elif self.prod == 'HP':
+            self.data = HpMajor
 
 
     def get_full_info(self):
@@ -73,7 +76,7 @@ class PeoplePrinter(PeoplePrinterInit):
 
 
 class KyoceraMajor(PeoplePrinter):
-
+    '''Класс используется для больинства моделей Kyocera, получает всю инфу'''
     def __int__(self):
         url_counter = f'http://{self.ip_address}/js/jssrc/model/dvcinfo/dvccounter/DvcInfo_Counter_PrnCounter.model.htm'
         url_toner = f'http://{self.ip_address}/js/jssrc/model/startwlm/Hme_Toner.model.htm'
@@ -82,13 +85,27 @@ class KyoceraMajor(PeoplePrinter):
         headers = {'Cookie': 'rtl=0; css=0',
                    'Referer': f"http://{self.ip_address}/startwlm/Start_Wlm.htm"}
 
-        page_code_config = requests.get(url_counter, headers=headers)
-        page_code_toner = requests.get(url_toner, headers=headers)
-        page_code_info = requests.get(url_info, headers=headers)
+        self.page_code_config = requests.get(url_counter, headers=headers)
+        self.page_code_toner = requests.get(url_toner, headers=headers)
+        self.page_code_info = requests.get(url_info, headers=headers)
+
+    def get_toner_prints(self):
+        try:
+            printed_total = re.findall(r".*printertotal = \('(\d*)'\)", self.page_code_config.text)  # получить отпечатанные листы
+            copy_total = re.findall(r".*copytotal = \('(\d*)'\)", self.page_code_config.text)  # получить копии
+            prints_count = int(printed_total[0]) + int(copy_total[0])  # получить cумму
+        except (ValueError, IndexError):
+            prints_count = 'Error'
+            return prints_count
+
+
+class HpMajor(PeoplePrinter):
+    print('HP CLASS')
+
 
 
 if __name__ == "__main__":
-    ip = '192.168.1.36'
+    ip = '192.168.4.162'
     printer = PeoplePrinter(ip)
     print(printer.get_full_info())
 
