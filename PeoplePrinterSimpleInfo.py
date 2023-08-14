@@ -70,7 +70,7 @@ class PeoplePrinter(PeoplePrinterInit):
             self.data = HpMajor
 
 
-    def get_full_info(self):
+    def info(self):
         # возвращает словарь со всевозможными данными
         return self.prod, self.ip_address, self.locate
 
@@ -90,23 +90,17 @@ class KyoceraMajor(PeoplePrinter):
         self.page_code_info = requests.get(url_info, headers=headers)
 
     def get_toner_prints(self):
-        try:
-            printed_total = re.findall(r".*printertotal = \('(\d*)'\)", self.page_code_config.text)  # получить отпечатанные листы
-            copy_total = re.findall(r".*copytotal = \('(\d*)'\)", self.page_code_config.text)  # получить копии
-            prints_count = int(printed_total[0]) + int(copy_total[0])  # получить cумму
-        except (ValueError, IndexError):
-            prints_count = 'Error'
-            return prints_count
+        print('test')
 
 
 class HpMajor(PeoplePrinter):
-    print('HP CLASS')
+    pass
 
 
 
 if __name__ == "__main__":
     ip = '192.168.4.162'
     printer = PeoplePrinter(ip)
-    print(printer.get_full_info())
+    print(printer.info())
 
 
