@@ -59,8 +59,6 @@ class PeoplePrinter(PeoplePrinterInit):
 
 
 class KyoceraMajor(PeoplePrinter):
-    def __init__(self):
-        self.prod = 'se1t'
 
     def __str__(self):
         return self.prod
@@ -71,6 +69,6 @@ class HpMajor(PeoplePrinter):
         self.prod = 'set'
 
 if __name__ == "__main__":
-    ip = '192.168.4.162'
+    ip = '192.168.1.36'
     printer = PeoplePrinter(ip)
     print(printer.info())
