@@ -3,17 +3,17 @@ import requests
 
 
 '''Класс инициализирует новые принтеры, собирая базовую инфу
-    Производитель : prod, Локацию - отель в котором находится: locate и ip_address'''
+    Производитель : prod, Локацию - отель в котором находится: locate и ip_address
+    PeoplePrinter(ip).init() возвращает базовую инфу для инициализации нового принтера
+    ('192.168.1.36', 'KYOCERA', 'Olimp')
+    '''
 
 
-class PeoplePrinterInit:
+class PeoplePrinter:
     def __init__(self, ip_address):
         self.ip_address = ip_address
         self.prod = self.get_prod_printer
         self.locate = self.find_locate(ip_address)
-
-    def __str__(self):
-        pass
 
     @staticmethod
     def find_locate(ip_address):
@@ -46,27 +46,24 @@ class PeoplePrinterInit:
         finally:
             return self.prod
 
-    def init(self):
+    def init_info(self):
         return self.ip_address, self.prod, self.locate
 
-
-class PeoplePrinter(PeoplePrinterInit):
     def info(self):
         if self.prod == 'KYOCERA':
-            return KyoceraMajor()
+            return KyoceraMajor.full_info(self)
         elif self.prod == 'HP':
-            return HpMajor()
+            return HpMajor.full_info(self)
 
 
 class KyoceraMajor(PeoplePrinter):
-
-    def __str__(self):
-        return self.prod
+    def full_info(self):
+        return self.prod, self.locate, self.ip_address, 'test'
 
 
 class HpMajor(PeoplePrinter):
-    def __init__(self):
-        self.prod = 'set'
+    def full_info(self):
+        return self.prod, self.locate, self.ip_address, 'test'
 
 if __name__ == "__main__":
     ip = '192.168.1.36'
