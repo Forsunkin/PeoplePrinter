@@ -37,12 +37,11 @@ class PeoplePrinter:
         try:
             url = f'http://{self.ip_address}'
             response = requests.get(url)
-            r = response.text
+            r = r.history
         except requests.exceptions.ConnectionError:
             r = 'ConnectTimeout'
         finally:
             return r
-
 
     @property
     def get_prod_printer(self):
@@ -55,7 +54,7 @@ class PeoplePrinter:
             elif 'Pantum' in self.page:
                 prod = 'PANTUM'
             else:
-                prod = 'Wrong ip'
+                prod = self.page
                 return prod
         finally:
             return prod
@@ -214,7 +213,6 @@ class PantumMajor(PeoplePrinter):
 
 
 if __name__ == "__main__":
-    ip = '192.168.1.36'
-    printer = HPMajor(ip)
+    ip = '192.168.1.88'
+    printer = PantumMajor(ip)
     print(printer.init_info())
-    print(printer.info())

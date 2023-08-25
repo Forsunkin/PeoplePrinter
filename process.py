@@ -1,9 +1,8 @@
 from PeoplePrinter import PeoplePrinter
+import requests
 
 
+ip = 'https://192.168.1.88'
 
-ip = '192.168.1.78'
-
-ip = '192.168.1.36'
-print(PeoplePrinter.init_info(ip))
-
+r = requests.get(ip, verify=False)
+print(r.history)
