@@ -33,11 +33,17 @@ class PeoplePrinter:
 
     @property
     def get_page_printer(self):
-        r = ''
+        r = None
+        detect_refresh = r'(http-equiv="refresh")'   # regular ex for find refresh redirect
+        redirect_url = r'url=(.*)"'                  # read new url
+        url = f'http://{self.ip_address}/'
         try:
-            url = f'http://{self.ip_address}'
-            response = requests.get(url)
-            r = r.history
+            r = requests.get(url).text
+            if re.findall(detect_refresh, r):
+                re_url = re.findall(redirect_url, r)[0]
+                new_url = url+re_url
+                r = requests.get(new_url).text              # getting redirect page
+                return r
         except requests.exceptions.ConnectionError:
             r = 'ConnectTimeout'
         finally:
@@ -54,7 +60,7 @@ class PeoplePrinter:
             elif 'Pantum' in self.page:
                 prod = 'PANTUM'
             else:
-                prod = self.page
+                prod = 'Неизвестен'
                 return prod
         finally:
             return prod
@@ -186,33 +192,12 @@ class HPMajor(PeoplePrinter):
 
 class PantumMajor(PeoplePrinter):
 
-    def page_info(self):
-        url = f'http://{self.ip_address}/js/jssrc/model/dvcinfo/dvcconfig/DvcConfig_Config.model.htm?arg1=0'
-        page = requests.get(url).text
-        return page
-
-    @property
-    def mac(self):
-        mac_address = re.findall(r".*macAddress = '(.*)'", self.page_info())
-        return mac_address
-
-    @property
-    def host_name(self):
-        host_name = re.findall(r".*hostName = '(.*)'", self.page_info())
-        return host_name
-
-    @property
-    def model(self):
-        model = re.findall(r".*model = '.* (.*)'", self.page_info())
-        return model
-
-    def info(self):
-        return {'ip_address': self.ip_address, 'mac_address': self.mac, 'host_name': self.host_name, 'prod': self.prod,
-                'model': self.model, 'locate': self.locate, 'toner_lvl': self.toner, 'prints_count': self.prints_count,
-                'status': 'Done'}
+    def toner(self):
+        url = f'http://{self.ip_address}/css/style.css'
+        r = requests.get(url).text
 
 
 if __name__ == "__main__":
     ip = '192.168.1.88'
-    printer = PantumMajor(ip)
+    printer = PeoplePrinter(ip)
     print(printer.init_info())

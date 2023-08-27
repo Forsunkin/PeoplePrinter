@@ -1,10 +1,11 @@
 import requests
 import re
 
-url = 'http://192.168.1.88/'
+url = 'http://192.168.1.88/index.html'
+r1 = r'>(.*)%<'
 def get_info():
-    r = requests.get(url, allow_redirects=False)
-    return r.text
-
+    page = requests.get(url).text
+    toner = re.findall(r1, page)
+    return page
 
 print(get_info())
