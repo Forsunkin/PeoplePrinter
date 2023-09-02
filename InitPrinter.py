@@ -1,14 +1,12 @@
-import re
 import requests
-from bs4 import BeautifulSoup
-import time
+import re
 
 
-''' Класс инициализирует новые принтеры, собирая базовую инфу
+""" Класс инициализирует новые принтеры, собирая базовую инфу
     Производитель : prod, Локацию: locate - сеть в котором находится принтер: locate и ip_address
     InitPrinter(ip).init_info возвращает базовую инфу для инициализации нового принтера
     ('192.168.1.36', 'KYOCERA', 'Olimp')
-    '''
+"""
 
 
 class InitPrinter:
@@ -70,9 +68,7 @@ class InitPrinter:
         return self.ip_address, self.prod, self.locate
 
 
-
-
 if __name__ == "__main__":
-    ip = '192.168.1.88'
+    ip = '192.168.1.36'
     printer = InitPrinter(ip)
     print(printer.init_info)
