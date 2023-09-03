@@ -1,5 +1,4 @@
-from manufacturers.KYOCERA.major_kyocera import KyoceraMajor
-from InitPrinter import InitPrinter
+from src.InitPrinter import InitPrinter
 
 class PeoplePrinter():
 
