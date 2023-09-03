@@ -28,7 +28,7 @@ class KyoceraMajor(InitPrinter):
 
     @property
     def mac(self):
-        mac_address = re.findall(r".*macAddress = '(.*)'", self._page_info)[0]     # получить mac адресс
+        mac_address = re.findall(r".*macAddress = '(.*)'", self._page_info)[0]
         return mac_address
 
     @property

@@ -66,5 +66,5 @@ class HPMajor(InitPrinter):
 
 
 if __name__ == "__main__":
-    ip = '192.168.1.95'
+    ip = '192.168.2.104'
     print(HPMajor(ip).info)
