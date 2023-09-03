@@ -1,6 +1,6 @@
 import requests
 import re
-
+from src.manufacturers.KYOCERA.major_kyocera import KyoceraMajor
 
 """ Класс инициализирует новые принтеры, собирая базовую инфу
     Производитель : prod, Локацию: locate - сеть в котором находится принтер: locate
@@ -30,6 +30,7 @@ class InitPrinter:
         return locate
 
     def get_main_page_printer(self):
+        print('get_main_page')
         r = None
         detect_refresh = r'(http-equiv="refresh")'   # regular ex for find refresh redirect
         redirect_url = r'url=(.*)"'                  # read new url
@@ -48,19 +49,20 @@ class InitPrinter:
 
     @property
     def get_prod_printer(self):
-        prod = ''
-        try:
-            if 'KYOCERA' in self.main_page:
-                prod = 'KYOCERA'
-            elif 'HP LaserJet' in self.main_page:
-                prod = 'HP'
-            elif 'Pantum' in self.main_page:
-                prod = 'PANTUM'
+        prod = 'Неопределен'
+        manufacturers = ['KYOCERA', 'HP', 'PANTUM']
+        for manuf in manufacturers:
+            if manuf in self.main_page:
+                prod = manuf
             else:
-                prod = 'Неизвестен'
-                return prod
-        finally:
-            return prod
+                pass
+        return
+
+    @property
+    def selected_printer(self):
+        if self.prod == 'KYOCERA':
+            x = KyoceraMajor(self.ip_address)
+        return x.prints_count
 
     @property
     def init_info(self):
@@ -68,6 +70,6 @@ class InitPrinter:
 
 
 if __name__ == "__main__":
-    ip = '192.168.1.36'
+    ip = '192.168.2.36'
     printer = InitPrinter(ip)
-    print(printer.init_info)
+    print(printer.selected_printer)

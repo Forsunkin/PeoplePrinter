@@ -59,7 +59,7 @@ class HPMajor(InitPrinter):
         return prints_count
 
     @property
-    def info(self):
+    def full_info(self):
         return {'ip_address': self.ip_address, 'mac_address': self.mac, 'host_name': self.host_name, 'prod': self.prod,
                 'model': self.model, 'locate': self.locate, 'toner_lvl': self.toner, 'prints_count': self.prints_count,
                 'status': 'Done'}
@@ -67,4 +67,4 @@ class HPMajor(InitPrinter):
 
 if __name__ == "__main__":
     ip = '192.168.2.104'
-    print(HPMajor(ip).info)
+    print(HPMajor(ip).full_info)

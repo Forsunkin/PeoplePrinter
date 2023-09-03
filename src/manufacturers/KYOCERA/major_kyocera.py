@@ -1,11 +1,11 @@
 import re
 import requests
-from src.InitPrinter import InitPrinter
 
 
-class KyoceraMajor(InitPrinter):
+
+class KyoceraMajor:
     def __init__(self, ip_address):
-        super().__init__(ip_address)
+        self.ip_address = ip_address
         self.headers = {'Cookie': 'rtl=0; css=0', 'Referer': f"http://{self.ip_address}/startwlm/Start_Wlm.htm"}
         self._page_info = self._get_info_page()
         self._page_toner = self._get_toner_page()
@@ -59,13 +59,7 @@ class KyoceraMajor(InitPrinter):
         prints_count = int(printed_total) + int(copy_total)                                 # получить cумму
         return prints_count
 
-    @property
-    def info(self):
-        return {'ip_address': self.ip_address, 'mac_address': self.mac, 'host_name': self.host_name, 'prod': self.prod,
-                'model': self.model, 'locate': self.locate, 'toner_lvl': self.toner, 'prints_count': self.prints_count,
-                'status': 'Done'}
-
 
 if __name__ == "__main__":
     ip = '192.168.1.36'
-    print(KyoceraMajor(ip).info)
+    print(KyoceraMajor(ip).prints_count)
