@@ -6,8 +6,9 @@ url = 'http://192.168.1.88/index.html'
 r1 = r'>(.*)%<'
 
 
-class PantumMajor(InitPrinter):
-
+class PantumMajor:
+    def __init__(self, ip_address):
+        self.ip_address = ip_address
     def get_toner(self):
         '''Парс CSS, получение списка содержищего значение заполения полоски тонера'''
         url_str = f'http://{self.ip_address}/css/style.css'

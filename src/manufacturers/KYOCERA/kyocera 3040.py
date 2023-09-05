@@ -14,8 +14,8 @@ def get_3040(ip_address):
     page_code_info = requests.get(url, headers=headers)
     print(page_code_info.text)
     mac = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[175\]\+" :",(".{17}")', page_code_info.text)[0]
-    model = re.findall(r".*model = '(.*)'", page_code_info.text)[0]                # получть Модель
-    host_name = re.findall(r".*hostName = '(.*)'", page_code_info.text)[0]         # получить HostName
+    model = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[0\].*"(.*)","w272px"', page_code_info.text)[0]                # получть Модель
+    host_name = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[1\].*"(.*)","w272px"', page_code_info.text)[0]         # получить HostName
 
 
 

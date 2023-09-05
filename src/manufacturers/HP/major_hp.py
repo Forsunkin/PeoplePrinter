@@ -4,19 +4,19 @@ from bs4 import BeautifulSoup
 from src.InitPrinter import InitPrinter
 
 
-class HPMajor(InitPrinter):
+class HPMajor:
     def __init__(self, ip_address):
-        super().__init__(ip_address)
-        self._page_with_info = self.__get_info_page()
-        self._page_toner = self.__get_toner_page()
+        self.ip_address = ip_address
+        self._page_with_info = self._get_info_page()
+        self._page_toner = self._get_toner_page()
 
-    def __get_info_page(self):
+    def _get_info_page(self):
         url_info = f'''http://{self.ip_address}/info_configuration.html?tab=Home&menu=DevConfig'''
         page_code_info = requests.get(url_info).text
         bs_code_info = BeautifulSoup(page_code_info, "html.parser")
         return bs_code_info
 
-    def __get_toner_page(self):
+    def _get_toner_page(self):
         url_toner = f'''http://{self.ip_address}/info_suppliesStatus.html?tab=Home&menu=SupplyStatus'''  # page with toner
         page_code_toner = requests.get(url_toner).text
         bs_code_toner = BeautifulSoup(page_code_toner, "html.parser")
@@ -58,13 +58,13 @@ class HPMajor(InitPrinter):
         prints_count = td_parent.find(class_='itemFont').text
         return prints_count
 
-    @property
-    def full_info(self):
-        return {'ip_address': self.ip_address, 'mac_address': self.mac, 'host_name': self.host_name, 'prod': self.prod,
-                'model': self.model, 'locate': self.locate, 'toner_lvl': self.toner, 'prints_count': self.prints_count,
-                'status': 'Done'}
+    # @property
+    # def full_info(self):
+    #     return {'ip_address': self.ip_address, 'mac_address': self.mac, 'host_name': self.host_name, 'prod': self.prod,
+    #             'model': self.model, 'locate': self.locate, 'toner_lvl': self.toner, 'prints_count': self.prints_count,
+    #             'status': 'Done'}
 
 
 if __name__ == "__main__":
     ip = '192.168.2.104'
-    print(HPMajor(ip).full_info)
+    print(HPMajor(ip).mac)

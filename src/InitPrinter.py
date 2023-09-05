@@ -12,9 +12,9 @@ from src.manufacturers.KYOCERA.major_kyocera import KyoceraMajor
 class InitPrinter:
     def __init__(self, ip_address):
         self.ip_address = ip_address
-        self.main_page = self.get_main_page_printer()
+        self.main_page = self.__get_main_page_printer()
         self.locate = self.find_locate(ip_address)
-        self.prod = self.get_prod_printer
+        self.prod = self.get_prod_printer()
 
     @staticmethod
     def find_locate(ip_address):
@@ -29,8 +29,7 @@ class InitPrinter:
             locate = 'Неизвестно'
         return locate
 
-    def get_main_page_printer(self):
-        print('get_main_page')
+    def __get_main_page_printer(self):
         r = None
         detect_refresh = r'(http-equiv="refresh")'   # regular ex for find refresh redirect
         redirect_url = r'url=(.*)"'                  # read new url
@@ -47,29 +46,34 @@ class InitPrinter:
         finally:
             return r
 
-    @property
     def get_prod_printer(self):
         prod = 'Неопределен'
-        manufacturers = ['KYOCERA', 'HP', 'PANTUM']
-        for manuf in manufacturers:
-            if manuf in self.main_page:
-                prod = manuf
+        factory = ['KYOCERA', 'HP', 'PANTUM']
+        for x in factory:
+            if x in self.main_page:
+                prod = x
             else:
                 pass
-        return
+        return prod
 
-    @property
-    def selected_printer(self):
-        if self.prod == 'KYOCERA':
-            x = KyoceraMajor(self.ip_address)
-        return x.prints_count
-
-    @property
     def init_info(self):
         return self.ip_address, self.prod, self.locate
 
+    # def full_info(self, printer):
+    #     return {
+    #             'ip_address': self.ip_address,
+    #             'mac_address': printer.mac,
+    #             'host_name': printer.host_name,
+    #             'prod': self.prod,
+    #             'model': printer.model,
+    #             'locate': self.locate,
+    #             'toner_lvl': printer.toner,
+    #             'prints_count': printer.prints_count,
+    #             'status': 'Done'
+    #             }
+
 
 if __name__ == "__main__":
-    ip = '192.168.2.36'
+    ip = '192.168.1.33'
     printer = InitPrinter(ip)
-    print(printer.selected_printer)
+    print(printer.init_info())

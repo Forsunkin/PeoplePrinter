@@ -2,7 +2,6 @@ import re
 import requests
 
 
-
 class KyoceraMajor:
     def __init__(self, ip_address):
         self.ip_address = ip_address
@@ -61,5 +60,5 @@ class KyoceraMajor:
 
 
 if __name__ == "__main__":
-    ip = '192.168.1.36'
+    ip = '192.168.1.33'
     print(KyoceraMajor(ip).prints_count)
