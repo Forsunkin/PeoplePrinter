@@ -3,43 +3,90 @@ import requests
 import re
 
 
-def get_3040(ip_address):
-    url = f'http://{ip_address}/dvcinfo/dvcconfig/DvcConfig_Config.htm'
+# def get_3040(ip_address):
+#     url = f'http://{ip_address}/dvcinfo/dvcconfig/DvcConfig_Config.htm'
+#
+#     headers = {'Cookie': 'rtl=0; css=0',
+#                'Referer': f"http://{ip_address}/startwlm/Start_Wlm.htm"}
+#
+#
+#
+#     page_code_info = requests.get(url, headers=headers)
+#     print(page_code_info.text)
+#     mac = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[175\]\+" :",(".{17}")', page_code_info.text)[0]
+#     model = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[0\].*"(.*)","w272px"', page_code_info.text)[0]                # получть Модель
+#     host_name = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[1\].*"(.*)","w272px"', page_code_info.text)[0]         # получить HostName
 
-    headers = {'Cookie': 'rtl=0; css=0',
-               'Referer': f"http://{ip_address}/startwlm/Start_Wlm.htm"}
 
 
+class Kyocera3040:
+    def __init__(self, ip_address):
+        self.ip_address = ip_address
+        self._main_page = self._get_main_page()
+        self._page_info = self._get_info_page()
+        self._page_toner = self._get_toner_page()
+        self._page_counter = self._page_counter()
 
-    page_code_info = requests.get(url, headers=headers)
-    print(page_code_info.text)
-    mac = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[175\]\+" :",(".{17}")', page_code_info.text)[0]
-    model = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[0\].*"(.*)","w272px"', page_code_info.text)[0]                # получть Модель
-    host_name = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[1\].*"(.*)","w272px"', page_code_info.text)[0]         # получить HostName
-
-
-
-def get_data_printer(ip_address):
-    headers = {'Cookie': 'rtl=0; css=0',
-               'Referer': f"http://{ip_address}/startwlm/Start_Wlm.htm"}
-    try:
-        url = f'http://{ip_address}'
-        response = requests.get(url)
-        if 'KYOCERA' in response.text:
-            if 'DeepSleep.htm' in response.text:
-                print('Попытка разбудить')
-                time.sleep(5)
-                requests.get('http://192.168.1.33/esu/DeepSleepApply.htm', headers=headers)
-                print(response.text)
-            else:
-                get_3040(ip_address)
-        elif 'HP LaserJet' in response.text:
-            pass
+    def _get_main_page(self):
+        main_page = requests.get(f'http://{self.ip_address}/').text
+        if 'DeepSleep.htm' in main_page:
+            self._awakening()
         else:
-            print(ip_address, ' - Неверный ip')
-    except requests.exceptions.ConnectionError:
-            print(ip_address, ' - ConnectTimeout')
+            return main_page
 
-ip_adress = '192.168.1.33'
+    def _awakening(self):
+        url = f'http://{self.ip_address}/esu/set.cgi'
+        headers = {'Cookie': 'rtl=0; css=0', 'Referer': f"http://{self.ip_address}/esu/DeepSleepApply.htm"}
+        data = 'submit001=%D0%9F%D1%83%D1%81%D0%BA&okhtmfile=DeepSleepApply.htm&func=wakeup'
 
-get_data_printer(ip_adress)
+        requests.post(url, headers=headers, data=data)
+        time.sleep(5)
+        self._get_main_page()
+
+    def _get_info_page(self):
+        pass
+
+    def _get_toner_page(self):
+        pass
+
+    def _page_counter(self):
+        pass
+
+    @property
+    def mac(self):
+        pass
+
+    @property
+    def host_name(self):
+        host_name = re.findall(r".*hostName = '(.*)'", self._page_info)[0]
+        return host_name
+
+    @property
+    def model(self):
+        model = re.findall(r".*model = '(.*)'", self._page_info)[0]
+        return model
+
+    @property
+    def toner(self):
+        toner_lvl = 'Error'
+        try:
+            data_toner = re.findall(r".*parseInt\('(\d*)',10\)\)", self._page_toner)  # получить остаток тонера
+            toner_lvl = int(data_toner[0])
+        except (ValueError, IndexError):
+            pass
+        finally:
+            return toner_lvl
+
+    @property
+    def prints_count(self):
+        printed_total = re.findall(r".*printertotal = \('(\d*)'\)", self._page_counter)[0]  # получить оттиски
+        copy_total = re.findall(r".*copytotal = \('(\d*)'\)", self._page_counter)[0]  # получить сканы
+        prints_count = int(printed_total) + int(copy_total)  # получить cумму
+        return prints_count
+
+
+
+
+if __name__ == "__main__":
+    ip = '192.168.1.33'
+    print(Kyocera3040(ip)._get_main_page())

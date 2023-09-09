@@ -5,12 +5,12 @@ import requests
 class KyoceraMajor:
     def __init__(self, ip_address):
         self.ip_address = ip_address
-        self.headers = {'Cookie': 'rtl=0; css=0', 'Referer': f"http://{self.ip_address}/startwlm/Start_Wlm.htm"}
-        self._page_info = self._get_info_page()
+        self._headers = {'Cookie': 'rtl=0; css=0', 'Referer': f"http://{self.ip_address}/startwlm/Start_Wlm.htm"}
+        self._page_info = self._get_config_page()
         self._page_toner = self._get_toner_page()
         self._page_counter = self._page_counter()
 
-    def _get_info_page(self):
+    def _get_config_page(self):
         url_info = f'http://{self.ip_address}/js/jssrc/model/dvcinfo/dvcconfig/DvcConfig_Config.model.htm'
         page_code_info = requests.get(url_info, headers=self.headers)
         return page_code_info.text
