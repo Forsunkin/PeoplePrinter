@@ -2,7 +2,7 @@ from src.InitPrinter import InitPrinter
 from src.manufacturers.KYOCERA.major_kyocera import KyoceraMajor
 from src.manufacturers.HP.major_hp import HPMajor
 from src.manufacturers.PANTUM.major_pantum import PantumMajor
-
+from src.manufacturers.Xerox.major_xerox import XeroxMajor
 
 class PeoplePrinter(InitPrinter):
     def __init__(self, ip_address):
@@ -15,6 +15,8 @@ class PeoplePrinter(InitPrinter):
             x = HPMajor
         elif self.prod == 'PANTUM':
             x = PantumMajor
+        elif self.prod == 'XEROX':
+            x = XeroxMajor
         else:
             return 'Производитель неизвестен'
         return self.work(x(self.ip_address))
@@ -34,6 +36,6 @@ class PeoplePrinter(InitPrinter):
 
 
 if __name__ == "__main__":
-    ip = '192.168.1.91'
+    ip = '192.168.2.184'
     printer = PeoplePrinter(ip)
     print(printer.full_info())

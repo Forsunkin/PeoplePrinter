@@ -34,8 +34,9 @@ class InitPrinter:
         detect_refresh = r'(http-equiv="refresh")'   # regular ex for find refresh redirect
         redirect_url = r'url=(.*)"'                  # read new url
         url = f'http://{self.ip_address}/'
+        cookies = {'Cookie': 'SESSION_ID=1'}
         try:
-            r = requests.get(url).text
+            r = requests.get(url, cookies=cookies).text
             if re.findall(detect_refresh, r):
                 re_url = re.findall(redirect_url, r)[0]
                 new_url = url+re_url
@@ -48,9 +49,10 @@ class InitPrinter:
 
     def get_prod_printer(self):
         prod = 'Неопределен'
-        factory = ['KYOCERA', 'HP', 'PANTUM']
+        factory = ['KYOCERA', 'HP', 'PANTUM', 'XEROX']
         for x in factory:
-            if x in self.main_page:
+
+            if x in self.main_page.upper():
                 prod = x
             else:
                 pass
@@ -74,6 +76,6 @@ class InitPrinter:
 
 
 if __name__ == "__main__":
-    ip = '192.168.1.33'
+    ip = '192.168.1.39'
     printer = InitPrinter(ip)
     print(printer.init_info())
