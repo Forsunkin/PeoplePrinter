@@ -25,22 +25,18 @@ class KyoceraMajor:
         page_code_counter = requests.get(url_counter, headers=self.headers)
         return page_code_counter.text
 
-    @property
     def mac(self):
         mac_address = re.findall(r".*macAddress = '(.*)'", self._page_info)[0]
         return mac_address
 
-    @property
     def host_name(self):
         host_name = re.findall(r".*hostName = '(.*)'", self._page_info)[0]
         return host_name
 
-    @property
     def model(self):
         model = re.findall(r".*model = '(.*)'", self._page_info)[0]
         return model
 
-    @property
     def toner(self):
         toner_lvl = 'Error'
         try:
@@ -51,7 +47,6 @@ class KyoceraMajor:
         finally:
             return toner_lvl
 
-    @property
     def prints_count(self):
         printed_total = re.findall(r".*printertotal = \('(\d*)'\)", self._page_counter)[0]  # получить оттиски
         copy_total = re.findall(r".*copytotal = \('(\d*)'\)", self._page_counter)[0]        # получить сканы
@@ -60,5 +55,5 @@ class KyoceraMajor:
 
 
 if __name__ == "__main__":
-    ip = '192.168.2.118'
-    print(KyoceraMajor(ip).prints_count)
+    ip = '192.168.1.39'
+    print(KyoceraMajor(ip).prints_count())

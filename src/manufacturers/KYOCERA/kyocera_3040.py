@@ -57,22 +57,18 @@ class Kyocera3040:
         page_code_counter = requests.get(url_counter, headers=self.headers)
         return page_code_counter.text
 
-    @property
     def mac(self):
         mac = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[175\]\+" :",(".{17}")', self._page_info)[0]
         return mac
 
-    @property
     def host_name(self):
         host_name = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[1\].*"(.*)","w272px"', self._page_info)[0]
         return host_name
 
-    @property
     def model(self):
         model = re.findall(r'ComnAddLabelProperty\(\'2\'\,mes\[0\].*"(.*)","w272px"', self._page_info)[0]
         return model
 
-    @property
     def toner(self):
         toner_lvl = 'Error'
         try:
@@ -83,13 +79,11 @@ class Kyocera3040:
         finally:
             return toner_lvl
 
-    @property
     def prints_count(self):
         printed_total = re.findall(r"counterBlackWhite.0....(\d*)", self._page_counter)[0]  # получить оттиски
         copy_total = re.findall(r"counterBlackWhite.1....(\d*)", self._page_counter)[0]  # получить сканы
         prints_count = int(printed_total) + int(copy_total)  # получить cумму
         return prints_count
-
 
 
 if __name__ == "__main__":

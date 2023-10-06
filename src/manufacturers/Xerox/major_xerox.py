@@ -55,27 +55,22 @@ class XeroxMajor:
         page_code_counter = requests.get(url_counter, headers=self.headers)
         return page_code_counter.text
 
-    @property
     def mac(self):
         mac_address = re.findall(r"MAC Address:[\r\n].*[\r\n].*[\r\n].*[\r\n]....(.*).{3}", self._page_info)[0]
         return mac_address
 
-    @property
     def host_name(self):
         host_name = re.findall(r"Device Name:[\r\n].*[\r\n].*[\r\n].*[\r\n]....(.*).{2}", self._page_info)[0]
         return host_name
 
-    @property
     def model(self):
         model = 'MODEL'
         return model
 
-    @property
     def toner(self):
         total_toner = re.findall(r'tonerLife...."(.*)"', self._page_toner)[0]
         return total_toner
 
-    @property
     def prints_count(self):
         total_counts = re.findall(r"Total Impressions:\n.*\n.*\n...(\d*)", self._page_counter)[0]
         return total_counts

@@ -61,19 +61,6 @@ class InitPrinter:
     def init_info(self):
         return self.ip_address, self.prod, self.locate
 
-    # def full_info(self, printer):
-    #     return {
-    #             'ip_address': self.ip_address,
-    #             'mac_address': printer.mac,
-    #             'host_name': printer.host_name,
-    #             'prod': self.prod,
-    #             'model': printer.model,
-    #             'locate': self.locate,
-    #             'toner_lvl': printer.toner,
-    #             'prints_count': printer.prints_count,
-    #             'status': 'Done'
-    #             }
-
 
 if __name__ == "__main__":
     ip = '192.168.1.39'

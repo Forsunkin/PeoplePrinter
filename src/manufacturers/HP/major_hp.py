@@ -22,7 +22,6 @@ class HPMajor:
         bs_code_toner = BeautifulSoup(page_code_toner, "html.parser")
         return bs_code_toner
 
-    @property
     def mac(self):
         td = self._page_with_info.find("td", string='Аппаратный адрес:')
         td_parent = td.find_parent('tr')
@@ -30,7 +29,6 @@ class HPMajor:
         mac_address = (re.findall(r"(\w\w.*\w\w)", mac_address_unsorted)[0]).upper()
         return mac_address
 
-    @property
     def host_name(self):
         td = self._page_with_info.find("td", string='Имя хоста:')
         td_parent = td.find_parent('tr')
@@ -38,27 +36,23 @@ class HPMajor:
         host_name = (re.findall(r"(\w\w.*\w\w)", host_name_unsorted)[0]).upper()
         return host_name
 
-    @property
     def model(self):
         td = self._page_with_info.find("td", string='Название продукта:')
         td_parent = td.find_parent('tr')
         model = td_parent.find(class_='itemFont').text
         return model
 
-    @property
     def toner(self):
         data_toner = self._page_toner.find(class_='SupplyName width35 alignRight')
         toner_lvl = (re.findall(r"(\d+)", data_toner.text)[0])
         return toner_lvl
 
-    @property
     def prints_count(self):
         td = self._page_with_info.find("td", string='Всего оттисков:')
         td_parent = td.find_parent('tr')
         prints_count = td_parent.find(class_='itemFont').text
         return prints_count
 
-    # @property
     # def full_info(self):
     #     return {'ip_address': self.ip_address, 'mac_address': self.mac, 'host_name': self.host_name, 'prod': self.prod,
     #             'model': self.model, 'locate': self.locate, 'toner_lvl': self.toner, 'prints_count': self.prints_count,
