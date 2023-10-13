@@ -1,6 +1,6 @@
 import requests
 import re
-from src.InitPrinter import InitPrinter
+from src.sub_main import InitPrinter
 
 url = 'http://192.168.1.88/index.html'
 r1 = r'>(.*)%<'

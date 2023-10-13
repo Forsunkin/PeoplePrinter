@@ -1,7 +1,7 @@
 import re
 import requests
 from bs4 import BeautifulSoup
-from src.InitPrinter import InitPrinter
+from src.sub_main import InitPrinter
 
 
 class HPMajor:
