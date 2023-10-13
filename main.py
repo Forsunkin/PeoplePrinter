@@ -1,8 +1,8 @@
-from src.sub_main import InitPrinter
-from src.manufacturers.KYOCERA.major_kyocera import KyoceraMajor
-from src.manufacturers.HP.major_hp import HPMajor
-from src.manufacturers.PANTUM.major_pantum import PantumMajor
-from src.manufacturers.Xerox.major_xerox import XeroxMajor
+from sub_main import InitPrinter
+from manufacturers.KYOCERA.major_kyocera import KyoceraMajor
+from manufacturers.HP.major_hp import HPMajor
+from manufacturers.PANTUM.major_pantum import PantumMajor
+from manufacturers.Xerox.major_xerox import XeroxMajor
 
 
 class PeoplePrinter(InitPrinter):

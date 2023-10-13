@@ -1,6 +1,5 @@
 import requests
 import re
-from src.manufacturers.KYOCERA.major_kyocera import KyoceraMajor
 
 """ Класс инициализирует новые принтеры, собирая базовую инфу
     Производитель : prod, Локацию: locate - сеть в котором находится принтер: locate
