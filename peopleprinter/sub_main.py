@@ -17,7 +17,7 @@ class InitPrinter:
 
     @staticmethod
     def find_locate(ip_address):
-        f = re.findall(r"192.168.(\d*).\d*", ip_address)[0]
+        f = re.findall(r"\d*.\d*.(\d*1)\d.\d*", ip_address)[0]
         if f == '1':
             locate = 'Olimp'
         elif f == '2':
