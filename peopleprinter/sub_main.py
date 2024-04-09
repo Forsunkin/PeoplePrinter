@@ -21,7 +21,7 @@ class InitPrinter:
         if f == '1':
             locate = 'Olimp'
         elif f == '2':
-            locate = 'Summarinn'
+            locate = 'Sunmarinn'
         elif f == '4':
             locate = 'Aurum'
         else:
