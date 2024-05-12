@@ -1,8 +1,8 @@
-from .sub_main import InitPrinter
-from .manufacturers.KYOCERA.major_kyocera import KyoceraMajor
-from .manufacturers.HP.major_hp import HPMajor
-from .manufacturers.PANTUM.major_pantum import PantumMajor
-from .manufacturers.Xerox.major_xerox import XeroxMajor
+from sub_main import InitPrinter
+from manufacturers.KYOCERA.major_kyocera import KyoceraMajor
+from manufacturers.HP.major_hp import HPMajor
+from manufacturers.PANTUM.major_pantum import PantumMajor
+from manufacturers.Xerox.major_xerox import XeroxMajor
 
 
 class PeoplePrinter(InitPrinter):
@@ -22,7 +22,6 @@ class PeoplePrinter(InitPrinter):
             return 'Производитель неизвестен'
         return self.work(x(self.ip_address))
 
-
     # Принимает определенный класс производителя принтера
     def work(self, printer):
         return {
@@ -38,7 +37,7 @@ class PeoplePrinter(InitPrinter):
 
 
 if __name__ == "__main__":
-    ip = '192.168.2.184'
+    ip = '10.12.21.87'
     printer = PeoplePrinter(ip)
     print(printer.info())
 
